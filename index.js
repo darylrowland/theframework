@@ -148,6 +148,12 @@ const VALIDATOR_METHODS = {
     },
     boolean: (parameter, value) => {
         if (value !== undefined) {
+            if (value instanceof boolean) {
+                return {
+                    validatedResult: value
+                };
+            }
+        
             if (value.toLowerCase() === "true" || value.toLowerCase() === "yes" || value === true) {
                 return {
                     validatedResult: true
