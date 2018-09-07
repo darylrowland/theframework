@@ -1,6 +1,6 @@
 {
   "name": "the-framework",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "The Framework - API building framework",
   "main": "index.js",
   "scripts": {
