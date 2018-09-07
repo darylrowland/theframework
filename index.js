@@ -676,11 +676,14 @@ module.exports = {
 
         this.routeFiles = [];
 
-        var dir = path.join(process.cwd(), "..", startingDirectory);
+        console.log("cwd", process.cwd());
+
+        var dir = path.join(process.cwd(), startingDirectory);
         this.addRouteFilesNow(dir);
     },
 
     addRouteFilesNow(directory) {
+        console.log("trying to add", directory);
         var files = fs.readdirSync(directory);
 
         files.forEach((file) => {
