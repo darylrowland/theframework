@@ -676,14 +676,11 @@ module.exports = {
 
         this.routeFiles = [];
 
-        console.log("cwd", process.cwd());
-
         var dir = path.join(process.cwd(), startingDirectory);
         this.addRouteFilesNow(dir);
     },
 
     addRouteFilesNow(directory) {
-        console.log("trying to add", directory);
         var files = fs.readdirSync(directory);
 
         files.forEach((file) => {
@@ -744,7 +741,7 @@ module.exports = {
                 console.error("😡 Couldn't start server as SSL paths don't exist");
             }
         } else {
-            console.log("😬  The server is running over http only. You should really setup SSL.")
+            console.log("The server is running over http on port", port);
             http.createServer((req, res) => {
                 this.onServerRequest(req, res);
             }).listen(port);

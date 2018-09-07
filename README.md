@@ -28,3 +28,26 @@ theFramework.startServer({
     port: PORT
 });
 ```
+
+And then create .js route files under the /api directory (or whatever you specified above in apiDirectory).
+
+Any route files you create under this directory will be automatically added to the framework.
+
+## Route file structure
+Route files are just standard NodeJS files, and look something like:
+
+```javascript
+const theFramework = require("the-framework");
+
+theFramework.get("/hello", [
+    {id: "name", type: theFramework.STRING, required: true, description: "Your name"}
+], {
+    description: "Says hello"
+    authRequired: false
+}, async (params) => {
+    return {message: "Hello " + params.name}
+});
+```
+
+
+
