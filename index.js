@@ -148,7 +148,7 @@ const VALIDATOR_METHODS = {
     },
     boolean: (parameter, value) => {
         if (value !== undefined) {
-            if (value instanceof boolean) {
+            if (typeof(value) === "boolean") {
                 return {
                     validatedResult: value
                 };
