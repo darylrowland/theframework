@@ -676,7 +676,7 @@ module.exports = {
 
         this.routeFiles = [];
 
-        var dir = path.join(process.cwd(), startingDirectory);
+        var dir = path.join(process.cwd(), "..", "..", startingDirectory);
         this.addRouteFilesNow(dir);
     },
 
