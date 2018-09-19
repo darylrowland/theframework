@@ -74,3 +74,13 @@ e.g.
     message: "Error message here"
 }
 ```
+
+## Uploading files and images
+If you specify that a parameter is a FILE or IMAGE, the parameter object will look something like:
+
+```javascript
+{
+    path: // Where the file has been saved (usually tmp dir),
+    mimetype: // the mimetype of the uploaded filename
+    original_filename: // the original filename of the file
+}
