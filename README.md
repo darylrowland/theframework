@@ -24,7 +24,7 @@ theFramework.startServer({
         return null;
     },
     apiDirectory: "/api", // Directory you will store your route files in
-    userTokenHeader: "x-user-token", // Header you will use for your user toens
+    userTokenHeader: "x-user-token", // Header you will use for your user tokens
     port: PORT
 });
 ```
@@ -49,5 +49,28 @@ theFramework.get("/hello", [
 });
 ```
 
+## Supported Parameter types
+| Type | Description |
+|-------|---------------------|
+| STRING | String |
+| INTEGER | Integer, e.g. 4 |
+| FLOAT | Floating point number, e.g. 2.5 |
+| ENUM | Enum options, e.g. Male, Female - you must also provide a validValues array in the parameter config |
+| DATE | Date, defaults to YYYY-MM-DD format, unless you pass a date format to the dateFormat parameter |
+| BOOLEAN | Boolean, e.g. true or false |
+| IMAGE | Image file upload |
+| FILE | File upload |
 
+## Throwing exceptions
+If you throw exceptions in your code, by default a 501 server error will be returned.
 
+Throwing an object with a status and a message will allow you to throw a different error code.
+
+e.g. 
+
+```javascript
+{
+    status: 123,
+    message: "Error message here"
+}
+```
