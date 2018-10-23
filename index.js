@@ -739,7 +739,7 @@ module.exports = {
                 };
 
                 // Create the SSL server
-                https.createServer(sslOptions, (req, res) => {
+                this._server = https.createServer(sslOptions, (req, res) => {
                     this.onServerRequest(req, res);
                 }).listen(port);
 
@@ -748,7 +748,7 @@ module.exports = {
             }
         } else {
             console.log("The server is running over http on port", port);
-            http.createServer((req, res) => {
+            this._server = http.createServer((req, res) => {
                 this.onServerRequest(req, res);
             }).listen(port);
         }
