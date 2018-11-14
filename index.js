@@ -27,6 +27,7 @@ const OPTIONS = "OPTIONS";
 
 const STRING = "string";
 const INTEGER = "integer";
+const OBJECT = "object";
 const FLOAT = "float";
 const ENUM = "enum";
 const DATE = "date";
@@ -48,6 +49,18 @@ const VALIDATOR_METHODS = {
         return {
             validatedResult: value
         };
+    },
+    object: (parameter, value) => {
+        if (typeof value !== "object") {
+            return {
+                error: "'" + parameter.id + "' must be an object",
+                field: parameter.id
+            }
+        }
+
+        return {
+            validatedResult: value
+        }
     },
     integer: (parameter, value) => {
         var error = undefined;
@@ -239,6 +252,7 @@ module.exports = {
     
     STRING: STRING,
     INTEGER: INTEGER,
+    OBJECT: OBJECT,
     FLOAT: FLOAT,
     ENUM: ENUM,
     BOOLEAN: BOOLEAN,
