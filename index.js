@@ -548,7 +548,7 @@ module.exports = {
                 url = url.substr(0, url.indexOf("?"));
             }
 
-            if (url === "" || url === "/") {
+            if ((url === "" || url === "/") && !this.config.disableListing) {
                 // Root URL, return the JSON config/API definition
                 this.generateApiDefinition(res);
             } else {
@@ -768,7 +768,5 @@ module.exports = {
         }
 
         return this._server;
-
-       
     }
 };
