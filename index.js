@@ -16,7 +16,7 @@ const DEFAULT_POWERED_BY = "The Framework";
 const DEFAULT_DATE_FORMAT = "YYYY-MM-DD";
 const DEFAULT_API_DIRECTORY = "/api";
 
-const MAX_BODY_LENGTH = 1e6;
+const MAX_BODY_LENGTH = 1e6 * 10;
 
 const GET = "GET";
 const POST = "POST";
@@ -663,7 +663,7 @@ module.exports = {
                         body += data;
                         
                         if (body.length > MAX_BODY_LENGTH) { 
-                            request.connection.destroy();
+                            req.connection.destroy();
                         }
                     });
     
