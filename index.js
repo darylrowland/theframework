@@ -41,8 +41,11 @@ const ERROR_404_NOT_FOUND = 404;
 const ERROR_500_SERVER_ERROR = 500;
 
 const STATUS_CODE_SUCCESS = 200;
+const STATUS_CODE_REDIRECT = 301;
 
 const CONTENT_TYPE_JSON = "application/json";
+
+const RESPONSE_TYPE_REDIRECT = "redirect";
 
 const VALIDATOR_METHODS = {
     string: (parameter, value) => {
@@ -588,9 +591,20 @@ module.exports = {
                             // Params have been validated
                             try {
                                 const response = await foundMethod.method(validatedParams.params, authUser, req);
-                                this.writeHeaders(res, STATUS_CODE_SUCCESS, CONTENT_TYPE_JSON);
-                                res.write(JSON.stringify(response));
-                                res.end();
+                                
+                                if (response && response.type === RESPONSE_TYPE_REDIRECT && response.redirect_to) {
+                                    // If this is a redirect, redirect to the url
+                                    res.writeHead(STATUS_CODE_REDIRECT, {
+                                        Location: response.redirect_to
+                                    });
+                                    
+                                    res.end();
+
+                                } else {
+                                    this.writeHeaders(res, STATUS_CODE_SUCCESS, CONTENT_TYPE_JSON);
+                                    res.write(JSON.stringify(response));
+                                    res.end();
+                                }
                             } catch (err) {
                                 this.handleException(err, res);
                             }
