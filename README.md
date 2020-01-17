@@ -42,7 +42,7 @@ const theFramework = require("the-framework");
 theFramework.get("/hello", [
     {id: "name", type: theFramework.STRING, required: true, description: "Your name"}
 ], {
-    description: "Says hello"
+    description: "Says hello",
     authRequired: false
 }, async (params, user) => {
     // Params is an object of processed parameters
