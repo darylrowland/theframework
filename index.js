@@ -759,7 +759,10 @@ module.exports = {
 
         this.addRouteFiles();
 
-        if (process.env.SSL_KEY_PATH && process.env.SSL_CERT_PATH) {
+        if (this.config.test) {
+            // We are in test mode
+            return this.onServerRequest(req, res);
+        } else if (process.env.SSL_KEY_PATH && process.env.SSL_CERT_PATH) {
             if (fs.existsSync(process.env.SSL_KEY_PATH) && fs.existsSync(process.env.SSL_CERT_PATH)) {
                 const sslOptions = {
                     key: fs.readFileSync(process.env.SSL_KEY_PATH),
