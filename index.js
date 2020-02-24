@@ -416,7 +416,7 @@ module.exports = {
     },
 
     async getAuthUser(req, method) {
-        if (!this.authenticationMethod) {
+        if (!this.authenticationMethod && method.authRequired) {
             console.error("Your server has authRequired=true on some methods but you have not set an authenticator method");
         }
 
@@ -761,6 +761,7 @@ module.exports = {
 
         if (this.config.test) {
             // We are in test mode
+            console.log("🏗 We are in TEST mode");
             return {
                 runRequest: (req, res) => this.onServerRequest(req, res)
             };
