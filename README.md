@@ -87,3 +87,11 @@ If you specify that a parameter is a FILE or IMAGE, the parameter object will lo
     mimetype: // the mimetype of the uploaded filename
     original_filename: // the original filename of the file
 }
+```
+
+## Disable docs and JSON route listing
+By default, if you hit `/docs.json` you will get back a json list of all of your route.
+To disable this, pass  `disableListing: true` in your server config.
+
+Similarly,by default, if you hit `/docs` you will get back some nicely formatted auto generated API docs.
+To disable this, pass  `disableDocs: true` in your server config.

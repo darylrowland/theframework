@@ -45,7 +45,30 @@ const STATUS_CODE_REDIRECT = 301;
 
 const CONTENT_TYPE_JSON = "application/json";
 
+const DOC_MIME_TYPES = {
+    "svg": "image/svg+xml",
+    "js": "text/javascript",
+    "css": "text/css"
+};
+
 const RESPONSE_TYPE_REDIRECT = "redirect";
+
+var DOCS_FILES = {};
+
+const createListOfDocsFiles = function(path) {
+    const files = fs.readdirSync(`${__dirname}/docs/build${path}`);
+
+    files.forEach((file) => {
+        const filePath = `${__dirname}/docs/build${path}/${file}`;
+        if (fs.lstatSync(filePath).isDirectory()) {
+            createListOfDocsFiles(`${path}/${file}`);
+        } else {
+            DOCS_FILES[`${path}/${file}`] = true;
+        }
+    });
+};
+
+createListOfDocsFiles("");
 
 const VALIDATOR_METHODS = {
     string: (parameter, value) => {
@@ -486,6 +509,56 @@ module.exports = {
         };
     },
 
+    checkRequestedFileIsInDocs(filename) {
+        if (DOCS_FILES[`/${filename}`]) {
+            return true;
+        }
+
+        console.log("404: " + filename);
+
+        return false;
+
+    },
+
+    async loadFile(filename) {
+        if  (!this.checkRequestedFileIsInDocs(filename)) {
+            throw Error("Invalid filename");
+        }
+
+        return new Promise((resolve, reject) => {
+            fs.readFile(`${__dirname}/docs/build/${filename}`, function (err, data) {
+                if (err) {
+                  reject(err); 
+                } else {
+                    resolve(data);
+                }
+            });
+        });
+        
+    },
+
+    async loadDocsFile(filename, res) {
+        try {
+            const fileContents = await this.loadFile(filename);
+
+            if (filename.indexOf(".") >= 0) {
+                var fileEnding = filename.substr(filename.lastIndexOf(".") + 1);
+
+                if (DOC_MIME_TYPES[fileEnding]) {
+                    this.writeHeaders(res, STATUS_CODE_SUCCESS, DOC_MIME_TYPES[fileEnding]);
+                }
+            }
+
+            res.write(fileContents);
+            res.end();
+        } catch (e) {
+            this.writeHeaders(res, ERROR_404_NOT_FOUND, CONTENT_TYPE_JSON);
+            res.write(JSON.stringify({error: "URL " + filename + " not found"}));
+            res.end();
+        }
+        
+    },
+
     generateApiDefinition(res) {
         var apiMethods = [];
 
@@ -551,9 +624,22 @@ module.exports = {
                 url = url.substr(0, url.indexOf("?"));
             }
 
-            if ((url === "" || url === "/") && !this.config.disableListing) {
+            if ((url === "docs.json" || url === "/docs.json") && !this.config.disableListing) {
                 // Root URL, return the JSON config/API definition
                 this.generateApiDefinition(res);
+            } else if (url.indexOf("/docs") === 0 && !this.config.disableDocs) {
+                if (url === "/docs/") {
+                    // Redirect to /docs without trailing / so as to not mess up create react app
+                    res.writeHead(STATUS_CODE_REDIRECT, {
+                        Location: "/docs"
+                    });
+                    res.end();
+                } else if (url === "/docs") {
+                    this.loadDocsFile("index.html", res);
+                } else {
+                    var docsUrl = url.substr("/docs".length + 1);
+                    this.loadDocsFile(docsUrl, res);
+                }
             } else {
                 // Potentiall a method in the API
                 var foundMethodObj = this.findMethod(req.method.toUpperCase(), url);
@@ -760,13 +846,13 @@ module.exports = {
             port = process.env.PORT;
         }
 
-        console.log("🏗 About to start The Framework on port", port);
+        console.log("\n🏗 About to start The Framework on port", port, "\n");
 
         this.addRouteFiles();
 
         if (this.config.test) {
             // We are in test mode
-            console.log("🏗 We are in TEST mode");
+            console.log("\n🏗 We are in TEST mode\n");
             return {
                 runRequest: (req, res) => this.onServerRequest(req, res)
             };
@@ -786,7 +872,7 @@ module.exports = {
                 console.error("😡 Couldn't start server as SSL paths don't exist");
             }
         } else {
-            console.log("The server is running over http on port", port);
+            console.log("\n✅ The server is running over http on port", port);
             this._server = http.createServer((req, res) => {
                 this.onServerRequest(req, res);
             }).listen(port);
