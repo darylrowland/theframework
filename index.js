@@ -670,29 +670,34 @@ module.exports = {
                 req.queryParams = queryParams;
                 this.handleRequest(req, res, queryParams);
             } else {
-                if (req.headers && req.headers["content-type"] && req.headers["content-type"].indexOf("multipart/form-data") >= 0) {
-                    this.handleMultipartRequest(req, res);
+                if (this.config.test) {
+                    // This is a test mode request, body is already parsed
+                    this.handleRequest(req, res, req.body);
                 } else {
-                    req.on("data", (data) => {
-                        body += data;
-                        
-                        if (body.length > MAX_BODY_LENGTH) { 
-                            req.connection.destroy();
-                        }
-                    });
-    
-                    req.on("end", () => {
-                        var parsedBody = null;
-    
-                        try {
-                            parsedBody = JSON.parse(body);
-                        } catch (err) {
-                            parsedBody = qs.parse(body);
-                        }
-    
-                        req.body = parsedBody;
-                        this.handleRequest(req, res, parsedBody);
-                    });
+                    if (req.headers && req.headers["content-type"] && req.headers["content-type"].indexOf("multipart/form-data") >= 0) {
+                        this.handleMultipartRequest(req, res);
+                    } else {
+                        req.on("data", (data) => {
+                            body += data;
+                            
+                            if (body.length > MAX_BODY_LENGTH) { 
+                                req.connection.destroy();
+                            }
+                        });
+        
+                        req.on("end", () => {
+                            var parsedBody = null;
+        
+                            try {
+                                parsedBody = JSON.parse(body);
+                            } catch (err) {
+                                parsedBody = qs.parse(body);
+                            }
+        
+                            req.body = parsedBody;
+                            this.handleRequest(req, res, parsedBody);
+                        });
+                    }   
                 }
             }
         } catch (e) {
