@@ -1,26 +1,61 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from 'react';
+import Radium from 'radium';
+import Main from "./screens/Main";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import { BrowserRouter as Router,
+	Switch,
+	Route} from "react-router-dom";
+
+import HttpServices from "./services/HttpServices";
+import ViewMethod from './screens/ViewMethod';
+
+class App extends Component {
+
+	constructor(props) {
+		super(props);
+		this.state = {
+			loading: true,
+			methods: null
+		};
+	}
+
+	componentDidMount() {
+		this.reload();
+	}
+
+	async reload() {
+		const docsJson = await HttpServices.get("/docs.json");
+
+		this.setState({
+			loading: false,
+			docsJson: docsJson,
+			methods: docsJson.method
+		});
+	}
+
+	render() {
+		
+		return (
+			<Router>
+				<div>
+					<Switch>
+						<Route path="/methods">
+							<ViewMethod
+								loading={this.state.loading}
+								methods={this.state.methods}
+							/>
+						</Route>
+						<Route path="/">
+							<Main
+								methods={this.state.methods}
+							/>
+						</Route>
+					</Switch>
+				</div>
+			</Router>
+		);
+		 
+	}
 }
 
-export default App;
+export default Radium(App);
