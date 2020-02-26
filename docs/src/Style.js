@@ -48,6 +48,10 @@ export default {
             },
             POST: {
                 backgroundColor: COLORS.blue
+            },
+            DELETE: {
+                backgroundColor: COLORS.red,
+                color: COLORS.white
             }
         },
         modalOverlay: {
