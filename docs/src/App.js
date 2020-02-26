@@ -39,7 +39,7 @@ class App extends Component {
 			<Router>
 				<div>
 					<Switch>
-						<Route path="/methods">
+						<Route path="/docs/methods">
 							<ViewMethod
 								loading={this.state.loading}
 								methods={this.state.methods}

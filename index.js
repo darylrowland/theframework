@@ -634,7 +634,7 @@ module.exports = {
                         Location: "/docs"
                     });
                     res.end();
-                } else if (url === "/docs") {
+                } else if (url === "/docs" || url.indexOf("/docs/methods") === 0) {
                     this.loadDocsFile("index.html", res);
                 } else {
                     var docsUrl = url.substr("/docs".length + 1);

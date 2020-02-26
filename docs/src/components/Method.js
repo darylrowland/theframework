@@ -16,7 +16,7 @@ class Method extends Component {
 		}
 
 		return (
-			<Link to={`/methods?method=${this.props.method.method}&url=${this.props.method.url}`}>
+			<Link to={`/docs/methods?method=${this.props.method.method}&url=${this.props.method.url}`}>
 				<div style={localStyles.container}>
 					<MethodAndUrlTitle
 						method={this.props.method}
