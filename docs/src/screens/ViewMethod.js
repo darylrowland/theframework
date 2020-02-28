@@ -24,7 +24,6 @@ class ViewMethod extends Component {
 
 	getMethod() {
 		for (const method of this.props.methods) {
-			console.log(method);
 			if (method.method === this.state.url.method && method.url === this.state.url.url) {
 				return method;
 			}
