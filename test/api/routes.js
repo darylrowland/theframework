@@ -22,3 +22,14 @@ theFramework.post("/goodbye", [
     // user is the logged in user, if there is one
     return {message: "Goodbye " + params.name}
 });
+
+theFramework.get("/load/:id", [
+    {id: "id", type: theFramework.UUID, required: true, description: "UUID"}
+], {
+    description: "Checks UUIDs are loaded correctly",
+    authRequired: false
+}, async (params, user) => {
+    // Params is an object of processed parameters
+    // user is the logged in user, if there is one
+    return {message: "ID was " + params.id};
+});

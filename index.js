@@ -1,6 +1,6 @@
 const http = require("http");
 const https = require("https");
-const pathToRegexp = require("path-to-regexp");
+const { pathToRegexp } = require("path-to-regexp");
 const url = require("url");
 const qs = require("querystring");
 const moment = require("moment");
@@ -34,6 +34,10 @@ const DATE = "date";
 const BOOLEAN  = "boolean";
 const IMAGE = "image";
 const FILE = "file";
+const UUID = "uuid";
+
+const UUID_VALIDATOR_REGEXP = "fce41782-3603-423d-b6dc-412cd005953b";
+const uuidValidator = new RegExp(UUID_VALIDATOR_REGEXP);
 
 const ERROR_400_BAD_REQUEST = 400;
 const ERROR_401_UNAUTHORIZED = 401;
@@ -270,6 +274,20 @@ const VALIDATOR_METHODS = {
             validatedResult: value,
             error: error
         };
+    },
+    uuid: (parameter, value) => {
+        if (!uuidValidator.test(value)) {
+            return {
+                error: {
+                    error: `'${parameter.id}' must be a valid UUID`,
+                    field: parameter.id
+                }
+            }
+        };
+
+        return {
+            validatedResult: value
+        };
     }
 };
 
@@ -285,6 +303,7 @@ module.exports = {
     DATE: DATE,
     IMAGE: IMAGE,
     FILE: FILE,
+    UUID: UUID,
 
     ERROR_400_BAD_REQUEST: ERROR_400_BAD_REQUEST,
     ERROR_404_NOT_FOUND: ERROR_404_NOT_FOUND,
