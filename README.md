@@ -63,6 +63,7 @@ theFramework.get("/hello", [
 | IMAGE | Image file upload |
 | FILE | File upload |
 | OBJECT | JSON Object |
+| UUID | Valid UUID String |
 
 ## Throwing exceptions
 If you throw exceptions in your code, by default a 501 server error will be returned.
