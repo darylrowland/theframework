@@ -707,7 +707,7 @@ module.exports = {
 
                                 } else if (response.content_type) {
                                     // Custom content type
-                                    res.writeHeaders(res, STATUS_CODE_SUCCESS, response.content_type);
+                                    this.writeHeaders(res, STATUS_CODE_SUCCESS, response.content_type);
                                     res.write(response.content);
                                     res.end();
                                 } else {
