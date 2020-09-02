@@ -771,7 +771,7 @@ module.exports = {
         req.pipe(busboy);
     },
 
-    onServerRequest(req, res) {
+    async onServerRequest(req, res) {
         try {
             if (this.customOnRequest) {
                 const handled = await this.customOnRequest(req, res);
@@ -780,7 +780,7 @@ module.exports = {
                     return;
                 }
             }
-            
+
             var body = "";
 
             if (req.method === GET) {
