@@ -773,6 +773,14 @@ module.exports = {
 
     onServerRequest(req, res) {
         try {
+            if (this.customOnRequest) {
+                const handled = await this.customOnRequest(req, res);
+
+                if (handled) {
+                    return;
+                }
+            }
+            
             var body = "";
 
             if (req.method === GET) {
@@ -860,6 +868,10 @@ module.exports = {
 
             if (config.authenticationMethod) {
                 this.authenticationMethod = config.authenticationMethod;
+            }
+
+            if (config.onRequest) {
+                this.customOnRequest = config.onRequest;
             }
 
         } else {
