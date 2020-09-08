@@ -36,7 +36,7 @@ const IMAGE = "image";
 const FILE = "file";
 const UUID = "uuid";
 
-const UUID_VALIDATOR_REGEXP = "fce41782-3603-423d-b6dc-412cd005953b";
+const UUID_VALIDATOR_REGEXP = "[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}";
 const uuidValidator = new RegExp(UUID_VALIDATOR_REGEXP);
 
 const ERROR_400_BAD_REQUEST = 400;
@@ -662,7 +662,7 @@ module.exports = {
                     this.loadDocsFile(docsUrl, res);
                 }
             } else {
-                // Potentiall a method in the API
+                // Potentially a method in the API
                 var foundMethodObj = this.findMethod(req.method.toUpperCase(), url);
                 var foundMethod = null;
 
@@ -763,7 +763,7 @@ module.exports = {
         });
 
         busboy.on('field', function(fieldname, val, fieldnameTruncated, valTruncated, encoding, mimetype) {
-            fields[fieldname] = inspect(val);
+            fields[fieldname] = val;
         });
         
         busboy.on('finish', () => {
