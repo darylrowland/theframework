@@ -263,11 +263,13 @@ const VALIDATOR_METHODS = {
     file: (parameter, value) => {
         var error = undefined;
 
-        if (parameter.mimetype && !value.mimetype || value.mimetype.toLowerCase().indexOf(parameter.mimetype) < 0) {
-            error = {
-                error: "Invalid upload file type, was expecting '" + parameter.mimetype + "', found '" + value.mimetype + "'",
-                field: parameter.id
-            };
+        if (!parameter.allowAllMimeTypes) {
+            if (parameter.mimetype && !value.mimetype || value.mimetype.toLowerCase().indexOf(parameter.mimetype) < 0) {
+                error = {
+                    error: "Invalid upload file type, was expecting '" + parameter.mimetype + "', found '" + value.mimetype + "'",
+                    field: parameter.id
+                };
+            }
         }
 
         return {
