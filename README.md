@@ -90,6 +90,14 @@ If you specify that a parameter is a FILE or IMAGE, the parameter object will lo
 }
 ```
 
+Note: you can optionally specify a file size limit in the main config object.
+
+E.g. for 10MB limit:
+
+```
+fileSizeLimit: 10000000
+```
+
 ## Disable docs and JSON route listing
 By default, if you hit `/docs.json` you will get back a json list of all of your route.
 To disable this, pass  `disableListing: true` in your server config.

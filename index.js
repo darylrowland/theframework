@@ -741,7 +741,17 @@ module.exports = {
     handleMultipartRequest(req, res) {
         var fields = {};
 
-        var busboy = new Busboy({ headers: req.headers });
+        var multipartConfig = {
+            headers: req.headers
+        };
+
+        if (this.config && this.config.fileSizeLimit) {
+            multipartConfig.limits = {
+                fileSize: this.config.fileSizeLimit
+            };
+        }
+
+        var busboy = new Busboy(multipartConfig);
 
         busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
             var fileId = uuid();
