@@ -628,6 +628,10 @@ module.exports = {
             allowAccessControlHeaders += ", " + this.config.userTokenHeader;
         }
 
+        if (this.config && this.config.extraCorsHeaders) {
+            allowAccessControlHeaders += ", " + this.config.extraCorsHeaders;
+        }
+
         if (req.method.toUpperCase() === OPTIONS || !(this.methods[req.method.toUpperCase()])) {
             // Likely CORS options request
             res.writeHead(STATUS_CODE_SUCCESS, {
