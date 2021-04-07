@@ -376,12 +376,18 @@ module.exports = {
         };
     },
 
-    writeHeaders(res, status, contentType) {
-        res.writeHead(status, {
+    writeHeaders(res, status, contentType, contentDisposition) {
+        var headerObj = {
             "Content-Type": contentType,
             "Access-Control-Allow-Origin": "*",
             "X-Powered-By": this.config.poweredBy || DEFAULT_POWERED_BY
-        });
+        };
+
+        if (contentDisposition) {
+            headerObj["Content-Disposition"] = contentDisposition;
+        }
+
+        res.writeHead(status, headerObj);
     },
 
     handleException(err, res) {
@@ -713,7 +719,8 @@ module.exports = {
 
                                 } else if (response.content_type) {
                                     // Custom content type
-                                    this.writeHeaders(res, STATUS_CODE_SUCCESS, response.content_type);
+                                    this.writeHeaders(res, STATUS_CODE_SUCCESS, response.content_type, response.content_disposition);
+                                    
                                     res.write(response.content);
                                     res.end();
                                 } else {

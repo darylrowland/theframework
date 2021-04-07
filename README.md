@@ -79,6 +79,18 @@ e.g.
 }
 ```
 
+## Returning non JSON Content Types
+It is possible to return non JSON content by specifying content_type and content in your return object, e.g.
+
+```javascript
+{
+    content_type: "text/csv",
+    content: "...csv content..."
+}
+```
+
+You can also set content_disposition if you want, for example, to force a download of the file.
+
 ## Uploading files and images
 If you specify that a parameter is a FILE or IMAGE, the parameter object will look something like:
 
