@@ -725,7 +725,7 @@ module.exports = {
                                     res.write(response.content);
                                     res.end();
                                 } else if (response && response.type === RESPONSE_TYPE_EMPTY) {
-                                    this.writeHeaders(res, STATUS_CODE_SUCCESS);
+                                    this.writeHeaders(res, STATUS_CODE_SUCCESS, CONTENT_TYPE_JSON);
                                     res.end();
                                 } else {
                                     this.writeHeaders(res, STATUS_CODE_SUCCESS, CONTENT_TYPE_JSON);
