@@ -56,6 +56,7 @@ const DOC_MIME_TYPES = {
 };
 
 const RESPONSE_TYPE_REDIRECT = "redirect";
+const RESPONSE_TYPE_EMPTY = 'empty';
 
 var DOCS_FILES = {};
 
@@ -722,6 +723,9 @@ module.exports = {
                                     this.writeHeaders(res, STATUS_CODE_SUCCESS, response.content_type, response.content_disposition);
                                     
                                     res.write(response.content);
+                                    res.end();
+                                } else if (response && response.type === RESPONSE_TYPE_EMPTY) {
+                                    this.writeHeaders(res, STATUS_CODE_SUCCESS);
                                     res.end();
                                 } else {
                                     this.writeHeaders(res, STATUS_CODE_SUCCESS, CONTENT_TYPE_JSON);
