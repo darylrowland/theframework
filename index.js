@@ -444,7 +444,6 @@ module.exports = {
                         validatedParams[parameter.id] = validationResult.validatedResult;
                     }
                 } else {
-                    console.error("Unrecognized parameter type", parameter.type);
                     errors.push({error: "Unrecognized parameter type in setup"});
                 }
 
