@@ -56,6 +56,7 @@ const DOC_MIME_TYPES = {
 };
 
 const RESPONSE_TYPE_REDIRECT = "redirect";
+const RESPONSE_TYPE_EMPTY = 'empty';
 
 var DOCS_FILES = {};
 
@@ -723,6 +724,9 @@ module.exports = {
                                     
                                     res.write(response.content);
                                     res.end();
+                                } else if (response && response.type === RESPONSE_TYPE_EMPTY) {
+                                    this.writeHeaders(res, STATUS_CODE_SUCCESS, CONTENT_TYPE_JSON);
+                                    res.end();
                                 } else {
                                     this.writeHeaders(res, STATUS_CODE_SUCCESS, CONTENT_TYPE_JSON);
                                     res.write(JSON.stringify(response));
@@ -733,6 +737,9 @@ module.exports = {
                             }
                         } else {
                             // Invalid/missing params
+                            console.error(new Error('Invalid parameters'), {
+                                errors: validatedParams.errors
+                            });
                             this.writeHeaders(res, ERROR_400_BAD_REQUEST, CONTENT_TYPE_JSON);
                             res.write(JSON.stringify(validatedParams.errors));
                             res.end();
