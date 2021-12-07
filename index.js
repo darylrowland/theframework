@@ -736,9 +736,6 @@ module.exports = {
                             }
                         } else {
                             // Invalid/missing params
-                            console.error(new Error('Invalid parameters'), {
-                                errors: validatedParams.errors
-                            });
                             this.writeHeaders(res, ERROR_400_BAD_REQUEST, CONTENT_TYPE_JSON);
                             res.write(JSON.stringify(validatedParams.errors));
                             res.end();
