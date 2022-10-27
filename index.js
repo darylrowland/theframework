@@ -391,6 +391,8 @@ module.exports = {
     },
 
     handleException(err, res) {
+        console.error(err);
+        
         if (typeof err == "object") {
             if (err.status) {
                 this.writeHeaders(res, err.status, CONTENT_TYPE_JSON); 
