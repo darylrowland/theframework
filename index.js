@@ -391,7 +391,7 @@ module.exports = {
     },
 
     handleException(err, res) {
-        if (this.config.debug) {
+        if (this.config && this.config.debug) {
             console.error(err);
         }
 
