@@ -196,7 +196,7 @@ const VALIDATOR_METHODS = {
                     validatedResult: value
                 };
             }
-        
+
             if (value.toLowerCase() === "true" || value.toLowerCase() === "yes" || value === true) {
                 return {
                     validatedResult: true
@@ -216,7 +216,7 @@ const VALIDATOR_METHODS = {
                 error: "Not a valid boolean value"
             }
         };
-    }, 
+    },
     float: (parameter, value) => {
         var error = undefined;
         var validatedResult = undefined;
@@ -295,7 +295,7 @@ const VALIDATOR_METHODS = {
 
 
 module.exports = {
-    
+
     STRING: STRING,
     INTEGER: INTEGER,
     OBJECT: OBJECT,
@@ -362,7 +362,7 @@ module.exports = {
             // We have parameters to look out for and convert to regexp
             regExp = pathToRegexp(url, dynamicKeys);
             this.dynamicPaths[httpMethod.toUpperCase()].push(url);
-            
+
         }
 
         this.methods[httpMethod.toUpperCase()][url] = {
@@ -391,28 +391,30 @@ module.exports = {
     },
 
     handleException(err, res) {
-        console.error(err);
-        
+        if (this.config.debug) {
+            console.error(err);
+        }
+
         if (typeof err == "object") {
             if (err.status) {
-                this.writeHeaders(res, err.status, CONTENT_TYPE_JSON); 
+                this.writeHeaders(res, err.status, CONTENT_TYPE_JSON);
             } else {
                 this.writeHeaders(res, ERROR_500_SERVER_ERROR, CONTENT_TYPE_JSON);
             }
 
             if (err.message) {
                 res.write(JSON.stringify({error: err.message}));
-            } 
+            }
         } else {
             this.writeHeaders(res, ERROR_500_SERVER_ERROR, CONTENT_TYPE_JSON);
-            
+
             if (typeof err == "string") {
                 res.write(JSON.stringify({error: err}));
             } else {
                 res.write(JSON.stringify({error: "An unexpected error ocurred"}));
             }
         }
-        
+
         res.end();
     },
 
@@ -438,7 +440,7 @@ module.exports = {
                 // Parameter exists
                 if (VALIDATOR_METHODS[parameter.type]) {
                     var validationResult = VALIDATOR_METHODS[parameter.type](parameter, requestParams[parameter.id]);
-                    
+
                     if (validationResult.error) {
                         errors.push(validationResult.error);
                     } else {
@@ -462,7 +464,7 @@ module.exports = {
         if (req.headers && req.headers[header]) {
             return req.headers[header];
         }
-        
+
         return null;
     },
 
@@ -518,7 +520,7 @@ module.exports = {
 
             for (var i = 0; i < allRegExpMethods.length; i++) {
                 var regExp = this.methods[httpMethod][allRegExpMethods[i]];
-                
+
                 if (regExp.regExp.test(url)) {
                     params = this.getParamsFromMatchedUrl(regExp, url);
 
@@ -528,7 +530,7 @@ module.exports = {
                     };
                 }
             }
-            
+
         }
 
         return {
@@ -556,13 +558,13 @@ module.exports = {
         return new Promise((resolve, reject) => {
             fs.readFile(`${__dirname}/docs/build/${filename}`, function (err, data) {
                 if (err) {
-                  reject(err); 
+                  reject(err);
                 } else {
                     resolve(data);
                 }
             });
         });
-        
+
     },
 
     async loadDocsFile(filename, res) {
@@ -584,7 +586,7 @@ module.exports = {
             res.write(JSON.stringify({error: "URL " + filename + " not found"}));
             res.end();
         }
-        
+
     },
 
     generateApiDefinition(res) {
@@ -609,7 +611,7 @@ module.exports = {
                 });
             });
         });
-        
+
         // Sort the methods
         apiMethods.sort((a, b) => {
             if (a.url < b.url) {
@@ -709,19 +711,19 @@ module.exports = {
                             // Params have been validated
                             try {
                                 const response = await foundMethod.method(validatedParams.params, authUser, req);
-                                
+
                                 if (response && response.type === RESPONSE_TYPE_REDIRECT && response.redirect_to) {
                                     // If this is a redirect, redirect to the url
                                     res.writeHead(STATUS_CODE_REDIRECT, {
                                         Location: response.redirect_to
                                     });
-                                    
+
                                     res.end();
 
                                 } else if (response.content_type) {
                                     // Custom content type
                                     this.writeHeaders(res, STATUS_CODE_SUCCESS, response.content_type, response.content_disposition);
-                                    
+
                                     res.write(response.content);
                                     res.end();
                                 } else if (response && response.type === RESPONSE_TYPE_EMPTY) {
@@ -749,7 +751,7 @@ module.exports = {
                 }
             }
 
-            
+
         }
     },
 
@@ -771,7 +773,7 @@ module.exports = {
         busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
             var fileId = uuid();
             var saveTo = path.join(os.tmpdir(), fileId);
-            
+
             try {
                 file.pipe(fs.createWriteStream(saveTo));
             } catch (e) {
@@ -790,7 +792,7 @@ module.exports = {
         busboy.on('field', function(fieldname, val, fieldnameTruncated, valTruncated, encoding, mimetype) {
             fields[fieldname] = val;
         });
-        
+
         busboy.on('finish', () => {
             this.handleRequest(req, res, fields);
         });
@@ -824,25 +826,25 @@ module.exports = {
                     } else {
                         req.on("data", (data) => {
                             body += data;
-                            
-                            if (body.length > MAX_BODY_LENGTH) { 
+
+                            if (body.length > MAX_BODY_LENGTH) {
                                 req.connection.destroy();
                             }
                         });
-        
+
                         req.on("end", () => {
                             var parsedBody = null;
-        
+
                             try {
                                 parsedBody = JSON.parse(body);
                             } catch (err) {
                                 parsedBody = qs.parse(body);
                             }
-        
+
                             req.body = parsedBody;
                             this.handleRequest(req, res, parsedBody);
                         });
-                    }   
+                    }
                 }
             }
         } catch (e) {
@@ -853,7 +855,7 @@ module.exports = {
 
     addRouteFiles() {
         var startingDirectory = DEFAULT_API_DIRECTORY;
-        
+
         if (this.config && this.config.apiDirectory) {
             startingDirectory = this.config.apiDirectory;
         }
