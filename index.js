@@ -755,7 +755,7 @@ module.exports = {
         }
     },
 
-    handleMultipartRequest(req, res) {
+        handleMultipartRequest(req, res) {
         var fields = {};
 
         var multipartConfig = {
@@ -768,9 +768,10 @@ module.exports = {
             };
         }
 
-        var busboy = new Busboy(multipartConfig);
+        var busboy = Busboy(multipartConfig);
 
-        busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
+        busboy.on('file', function(fieldname, file, details) {
+            const {filename, encoding, mimeType} = details;
             var fileId = uuid();
             var saveTo = path.join(os.tmpdir(), fileId);
 
@@ -783,7 +784,7 @@ module.exports = {
 
             fields[fieldname] = {
                 path: saveTo,
-                mimetype: mimetype,
+                mimetype: mimeType,
                 original_filename: filename
             };
 
