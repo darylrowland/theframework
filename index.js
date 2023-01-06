@@ -431,12 +431,12 @@ module.exports = {
 
         method.parameters.forEach((parameter) => {
             // First check if missing required field
-            if (parameter.required && !requestParams[parameter.id]) {
+            if (parameter.required && (requestParams[parameter.id] === undefined || requestParams[parameter.id] === null)) {
                 errors.push({
                     error: "'" + parameter.id + "' is required",
                     field: parameter.id
                 });
-            } else if (requestParams[parameter.id]) {
+            } else if (requestParams[parameter.id] !== undefined && requestParams[parameter.id] !== null) {
                 // Parameter exists
                 if (VALIDATOR_METHODS[parameter.type]) {
                     var validationResult = VALIDATOR_METHODS[parameter.type](parameter, requestParams[parameter.id]);
