@@ -81,15 +81,24 @@ const VALIDATOR_METHODS = {
         };
     },
     object: (parameter, value) => {
+        var validatedResult = null;
+
         if (typeof value !== "object") {
-            return {
-                error: "'" + parameter.id + "' must be an object",
-                field: parameter.id
+            // Not an object, see if we can parse it as JSON
+            try {
+                validatedResult = JSON.parse(value);
+            } catch (e) {
+                return {
+                    error: "'" + parameter.id + "' must be an object",
+                    field: parameter.id
+                }
             }
+        } else {
+            validatedResult = value;
         }
 
         return {
-            validatedResult: value
+            validatedResult: validatedResult
         }
     },
     integer: (parameter, value) => {
