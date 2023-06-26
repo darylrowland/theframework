@@ -851,7 +851,9 @@ module.exports = {
                                 parsedBody = qs.parse(body);
                             }
 
+                            req.rawBody = body;
                             req.body = parsedBody;
+                
                             this.handleRequest(req, res, parsedBody);
                         });
                     }
