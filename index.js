@@ -418,7 +418,13 @@ module.exports = {
             this.writeHeaders(res, ERROR_500_SERVER_ERROR, CONTENT_TYPE_JSON);
 
             if (typeof err == "string") {
-                res.write(JSON.stringify({error: err}));
+                var processedError = err;
+
+                if (this.config && this.config.processErrorMessage) {
+                    processedError = this.config.processErrorMessage(err);
+                }
+
+                res.write(JSON.stringify({error: processedError}));
             } else {
                 res.write(JSON.stringify({error: "An unexpected error ocurred"}));
             }
