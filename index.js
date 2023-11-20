@@ -412,7 +412,13 @@ module.exports = {
             }
 
             if (err.message) {
-                res.write(JSON.stringify({error: err.message}));
+                var processedError = err.message;
+
+                if (this.config && this.config.processErrorMessage) {
+                    processedError = this.config.processErrorMessage(err);
+                }
+
+                res.write(JSON.stringify({error: processedError}));
             }
         } else {
             this.writeHeaders(res, ERROR_500_SERVER_ERROR, CONTENT_TYPE_JSON);
