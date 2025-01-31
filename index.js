@@ -57,6 +57,8 @@ const DOC_MIME_TYPES = {
 const RESPONSE_TYPE_REDIRECT = "redirect";
 const RESPONSE_TYPE_EMPTY = 'empty';
 
+const ALLOW_ACCESS_CONTROL_HEADERS =  "Origin, X-Requested-With, Content-Type, Accept";
+
 var DOCS_FILES = {};
 
 const createListOfDocsFiles = function(path) {
@@ -386,10 +388,16 @@ module.exports = {
     },
 
     writeHeaders(res, status, contentType, contentDisposition, cookie) {
+        const allowAccessControlHeaders = this.getAccessControlHeaders();
+
         var headerObj = {
             "Content-Type": contentType,
             "Access-Control-Allow-Origin": "*",
-            "X-Powered-By": this.config.poweredBy || DEFAULT_POWERED_BY
+            "X-Powered-By": this.config.poweredBy || DEFAULT_POWERED_BY,
+            "Access-Control-Allow-Methods": "OPTIONS, GET, HEAD, POST, PUT, PATCH, DELETE",
+            "Access-Control-Allow-Origin": this.config && this.config.corsOrigin ? this.config.corsOrigin : "*",
+            "Access-Control-Allow-Headers": allowAccessControlHeaders,
+            "Access-Control-Allow-Credentials": true
         };
 
         if (contentDisposition) {
@@ -583,7 +591,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             fs.readFile(`${__dirname}/docs/build/${filename}`, function (err, data) {
                 if (err) {
-                  reject(err);
+                    reject(err);
                 } else {
                     resolve(data);
                 }
@@ -655,8 +663,8 @@ module.exports = {
         res.end();
     },
 
-    async handleRequest(req, res, params) {
-        var allowAccessControlHeaders = "Origin, X-Requested-With, Content-Type, Accept";
+    getAccessControlHeaders() {
+        let allowAccessControlHeaders = ALLOW_ACCESS_CONTROL_HEADERS;
 
         if (this.config && this.config.userTokenHeader) {
             allowAccessControlHeaders += ", " + this.config.userTokenHeader;
@@ -666,12 +674,19 @@ module.exports = {
             allowAccessControlHeaders += ", " + this.config.extraCorsHeaders;
         }
 
+        return allowAccessControlHeaders;
+    },
+
+    async handleRequest(req, res, params) {
+        const allowAccessControlHeaders = this.getAccessControlHeaders();
+
         if (req.method.toUpperCase() === OPTIONS || !(this.methods[req.method.toUpperCase()])) {
             // Likely CORS options request
             res.writeHead(STATUS_CODE_SUCCESS, {
                 "Access-Control-Allow-Methods": "OPTIONS, GET, HEAD, POST, PUT, PATCH, DELETE",
                 "Access-Control-Allow-Origin": this.config && this.config.corsOrigin ? this.config.corsOrigin : "*",
-                "Access-Control-Allow-Headers": allowAccessControlHeaders
+                "Access-Control-Allow-Headers": allowAccessControlHeaders,
+                "Access-Control-Allow-Credentials": true
             });
 
             res.end();
@@ -786,7 +801,7 @@ module.exports = {
         }
     },
 
-        handleMultipartRequest(req, res) {
+    handleMultipartRequest(req, res) {
         var fields = {};
 
         var multipartConfig = {
