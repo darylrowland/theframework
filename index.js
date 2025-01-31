@@ -385,7 +385,7 @@ module.exports = {
         };
     },
 
-    writeHeaders(res, status, contentType, contentDisposition) {
+    writeHeaders(res, status, contentType, contentDisposition, cookie) {
         var headerObj = {
             "Content-Type": contentType,
             "Access-Control-Allow-Origin": "*",
@@ -394,6 +394,10 @@ module.exports = {
 
         if (contentDisposition) {
             headerObj["Content-Disposition"] = contentDisposition;
+        }
+
+        if (cookie) {
+            headerObj["Set-Cookie"] = cookie;
         }
 
         res.writeHead(status, headerObj);
@@ -751,10 +755,10 @@ module.exports = {
                                     this.writeHeaders(res, STATUS_CODE_SUCCESS, CONTENT_TYPE_JSON);
                                     res.end();
                                 } else {
-                                    this.writeHeaders(res, STATUS_CODE_SUCCESS, CONTENT_TYPE_JSON);
+                                    this.writeHeaders(res, STATUS_CODE_SUCCESS, CONTENT_TYPE_JSON, null, response._cookie);
 
                                     if (response._cookie) {
-                                        res.writeHead("Set-Cookie", response._cookie);
+                                        // Don't send the cookie in the response
                                         delete response._cookie;
                                     }
 
