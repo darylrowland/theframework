@@ -755,6 +755,7 @@ module.exports = {
 
                                     if (response._cookie) {
                                         res.writeHead("Set-Cookie", response._cookie);
+                                        delete response._cookie;
                                     }
 
                                     res.write(JSON.stringify(response));
