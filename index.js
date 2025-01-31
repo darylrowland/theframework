@@ -752,6 +752,11 @@ module.exports = {
                                     res.end();
                                 } else {
                                     this.writeHeaders(res, STATUS_CODE_SUCCESS, CONTENT_TYPE_JSON);
+
+                                    if (response._cookie) {
+                                        res.writeHead("Set-Cookie", response._cookie);
+                                    }
+
                                     res.write(JSON.stringify(response));
                                     res.end();
                                 }
@@ -865,7 +870,7 @@ module.exports = {
 
                             req.rawBody = body;
                             req.body = parsedBody;
-                
+
                             this.handleRequest(req, res, parsedBody);
                         });
                     }
