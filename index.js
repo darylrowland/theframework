@@ -670,7 +670,7 @@ module.exports = {
             // Likely CORS options request
             res.writeHead(STATUS_CODE_SUCCESS, {
                 "Access-Control-Allow-Methods": "OPTIONS, GET, HEAD, POST, PUT, PATCH, DELETE",
-                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Origin": this.config && this.config.corsOrigin ? this.config.corsOrigin : "*",
                 "Access-Control-Allow-Headers": allowAccessControlHeaders
             });
 
